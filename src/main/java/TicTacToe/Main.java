@@ -2,8 +2,6 @@ package TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -12,21 +10,22 @@ public class Main {
 
     private static char turn = 'X';
     private static JLabel title2;
-    private static ArrayList<JLabel> labels = new ArrayList<JLabel>();
+    private static final ArrayList<JLabel> labels = new ArrayList<JLabel>();
     private static String winner = " ";
     private static char[][] chars = new char[3][3];
     private static boolean enabled = true;
 
     public static void main(String[] args) {
 
-        JFrame frame = new JFrame("Tic Tac Toe Game :))");
-        frame.setSize(320, 470);
+        JFrame frame = new JFrame("Tic Tac Toe :))");
+        frame.setSize(400, 550);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
-        frame.setBackground(Color.white);
+        frame.getContentPane().setBackground(Color.white);
 
         JLabel title = new JLabel("Tic Tac Toe");
-        title.setBackground(Color.white);
+        title.setBackground(new Color(0xb8c8bb));
+        title.setForeground(Color.black);
         title.setOpaque(true);
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -39,7 +38,8 @@ public class Main {
 
         title2 = new JLabel("Player 1, it's your turn");
         title2.setHorizontalAlignment(SwingConstants.CENTER);
-        title2.setBackground(Color.white);
+        title2.setBackground(new Color(0xb8c8bb));
+        title2.setForeground(new Color(0x301c02));
         title2.setOpaque(true);
         title2.setFont(new Font("Tahoma", Font.BOLD, 20));
         title2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -55,21 +55,17 @@ public class Main {
         frame.add(panel, BorderLayout.CENTER);
 
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(2,1));
+        p.setLayout(new GridLayout(2, 1));
         p.add(title2);
 
-        JButton button = new JButton("New Game");
-        button.setBackground(Color.black);
-        button.setForeground(Color.white);
+        JButton button = new JButton("| New Game |");
+        button.setBackground(new Color(0xb8c8bb));
         button.setFont(new Font("Tahoma", Font.BOLD, 18));
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reboot();
-            }
-        });
-        p.add(button);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
 
+        button.addActionListener(e -> reboot());
+        p.add(button);
         frame.add(p, BorderLayout.SOUTH);
         frame.setVisible(true);
 
@@ -78,41 +74,46 @@ public class Main {
     private static JLabel getLabel(int i, int j) {
         JLabel label = new JLabel(" ");
         label.setOpaque(true);
-        label.setBackground(Color.white);
+        label.setBackground(new Color(0xb8c8bb));
         label.setFont(new Font("Tahoma", Font.BOLD, 60));
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        int m = i;
-        int n = j;
         label.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
                     if(label.getText().equals(" ")){
                         label.setText(String.valueOf(turn));
-                        chars[m][n] = turn;
+                        chars[i][j] = turn;
                         if(turn=='X'){
-                            label.setForeground(Color.BLUE);
+                            label.setForeground(new Color(0x301c02));
                             turn = 'O';
+                            title2.setForeground(new Color(0x386642));
                             title2.setText("Player 2, now it's you!");
                         }
                         else{
-                            label.setForeground(Color.RED);
+                            label.setForeground(new Color(0x386642));
                             turn = 'X';
                             title2.setText("Player 1, we're waiting!");
+                            title2.setForeground(new Color(0x301c02));
                         }
                     }
                     else{
                         title2.setText("Position Taken!");
                     }
                     if(checkWinner()){
-                        winner = winner.equals("X") ? "1" : "2";
-                        title2.setText("Player " + winner + " wins!" );
-                        if(winner.equals("1")) title2.setForeground(Color.blue);
-                        else title2.setForeground(Color.red);
+                        if(winner.equals("X")){
+                            title2.setForeground(new Color(0x301c02));
+                            winner = "1";
+                        }
+                        else{
+                            title2.setForeground(new Color(0x386642));
+                            winner = "2";
+                        }
+                        title2.setText("!! Player " + winner + " wins !!" );
                         enabled = false;
                     }
                     else if (!draw()){
-                        title2.setText("Draw!");
+                        title2.setText("!! Draw !!");
                         enabled = false;
                     }
                 }
@@ -170,7 +171,6 @@ public class Main {
         chars = new char[3][3];
         winner = " ";
         title2.setText("Player 1, Let's begin!");
-        title2.setForeground(Color.black);
         turn = 'X';
         enabled = true;
         for( JLabel label : labels) {
